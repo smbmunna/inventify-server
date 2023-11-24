@@ -1,7 +1,7 @@
-const express= require('express');
-const cors= require('cors');
-const app= express();
-const port=  process.env.PORT || '5000';
+const express = require('express');
+const cors = require('cors');
+const app = express();
+const port = process.env.PORT || '5000';
 require('dotenv').config();
 
 //middlewares
@@ -22,16 +22,29 @@ const client = new MongoClient(uri, {
   }
 });
 
+
 async function run() {
   try {
+
+    //collections
+    const userCollection = client.db('inventifyDb').collection('users');
+
+    //Users api
+    //insert users to DB on login 
+    app.post('/users', async (req, res) => {
+      const userInfo= req.body;
+      const result= await userCollection.insertOne(userInfo);
+      res.send(result);
+    })
+
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    //await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
@@ -40,10 +53,10 @@ run().catch(console.dir);
 
 
 
-app.get('/', async(req, res)=>{
-    await res.send('Inventify server is runnig');
+app.get('/', async (req, res) => {
+  await res.send('Inventify server is runnig');
 })
 
-app.listen(port,()=>{
-    console.log(`Inventify server is running on Port: ${port}`);
+app.listen(port, () => {
+  console.log(`Inventify server is running on Port: ${port}`);
 })
