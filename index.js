@@ -30,11 +30,26 @@ async function run() {
     const userCollection = client.db('inventifyDb').collection('users');
     const shopCollection = client.db('inventifyDb').collection('shops');
 
-    //Users api
+                                                //Users api
     //insert users to DB on login 
     app.post('/users', async (req, res) => {
       const userInfo= req.body;
       const result= await userCollection.insertOne(userInfo);
+      res.send(result);
+    })
+
+    app.put('/users', async(req, res)=>{
+      const userInfo= req.body; 
+      const filter= {email: userInfo.email}; 
+      const updatedDoc= {
+        $set:{
+          role: 'manager', 
+          shopId: userInfo.shopId, 
+          shopInfo: userInfo.shopInfo
+        }
+      }
+      //console.log(userInfo);
+      const result= await userCollection.updateOne(filter, updatedDoc);
       res.send(result);
     })
 
