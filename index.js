@@ -28,6 +28,7 @@ async function run() {
 
     //collections
     const userCollection = client.db('inventifyDb').collection('users');
+    const shopCollection = client.db('inventifyDb').collection('shops');
 
     //Users api
     //insert users to DB on login 
@@ -36,6 +37,15 @@ async function run() {
       const result= await userCollection.insertOne(userInfo);
       res.send(result);
     })
+
+                                                  //shop related apis
+    //insert shop
+    app.post('/shops', async (req, res)=>{
+      const shopInfo= req.body;
+      const result= await shopCollection.insertOne(shopInfo);
+      res.send(result);
+    })                                                  
+
 
     // Connect the client to the server	(optional starting in v4.7)
     //await client.connect();
