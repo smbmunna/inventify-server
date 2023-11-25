@@ -29,8 +29,10 @@ async function run() {
     //collections
     const userCollection = client.db('inventifyDb').collection('users');
     const shopCollection = client.db('inventifyDb').collection('shops');
+    const productCollection = client.db('inventifyDb').collection('products');
 
                                                 //Users api
+    
     //insert users to DB on login 
     app.post('/users', async (req, res) => {
       const userInfo= req.body;
@@ -48,7 +50,6 @@ async function run() {
           shopInfo: userInfo.shopInfo
         }
       }
-      //console.log(userInfo);
       const result= await userCollection.updateOne(filter, updatedDoc);
       res.send(result);
     })
@@ -59,7 +60,24 @@ async function run() {
       const shopInfo= req.body;
       const result= await shopCollection.insertOne(shopInfo);
       res.send(result);
-    })                                                  
+    })      
+    
+    //get shop info of user
+    app.get('/shops/:email', async(req, res)=>{
+      const email= req.params.email; 
+      const query= {ownerEmail: email};
+      const result= await shopCollection.findOne(query);      
+      res.send(result);
+    })
+
+
+                                                      //Product apis
+    app.post('/products', async(req, res)=>{
+      const productInfo= req.body;
+      const result= await productCollection.insertOne(productInfo);
+      res.send(result);
+    })                                                      
+
 
 
     // Connect the client to the server	(optional starting in v4.7)
