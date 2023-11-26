@@ -30,6 +30,7 @@ async function run() {
     const userCollection = client.db('inventifyDb').collection('users');
     const shopCollection = client.db('inventifyDb').collection('shops');
     const productCollection = client.db('inventifyDb').collection('products');
+    const cartCollection = client.db('inventifyDb').collection('carts');
 
                                                 //Users api
     
@@ -113,6 +114,13 @@ async function run() {
       const id= req.params.id;
       const query= {_id: new ObjectId(id)};
       const result= await productCollection.deleteOne(query);
+      res.send(result);
+    })
+
+    // -----------------------------Cart related apis
+    app.post('/carts', async(req,res)=>{
+      const product= req.body;
+      const result= await cartCollection.insertOne(product);
       res.send(result);
     })
 
