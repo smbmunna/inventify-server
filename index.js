@@ -10,7 +10,7 @@ app.use(express.json());
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cfuzedb.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -72,11 +72,41 @@ async function run() {
 
 
                                                       //Product apis
-    app.post('/products', async(req, res)=>{
+    app.post('/products', async(req, res)=>{      
       const productInfo= req.body;
       const result= await productCollection.insertOne(productInfo);
       res.send(result);
-    })                                                      
+    })       
+    
+    // find product of a particula shop manager
+    app.get('/products/:email', async(req,res)=>{
+      const email= req.params.email;
+      const query= {userEmail: email};
+      const result= await productCollection.find(query).toArray();
+      res.send(result);
+    })
+
+    //find product with id
+    app.get('/product/:id', async(req, res)=>{
+      const id= req.params.id;
+      const query= {_id: new ObjectId(id)};
+      const result= await productCollection.findOne(query);
+      res.send(result);
+    })
+
+    //update a product
+    app.put('/product/update/:id', async(req, res)=>{
+      const id= req.params.id;
+      const filter= {_id: new ObjectId(id)};
+      const updatedDoc= {
+        $set:{
+          ...req.body
+        }
+      };
+      const result =await productCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+      
+    })
 
 
 
