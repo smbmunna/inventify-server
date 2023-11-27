@@ -36,7 +36,12 @@ async function run() {
     const reviewsCollection = client.db('inventifyDb').collection('reviews');
 
                                                 //Users api
-    
+    //get all users for admin
+    app.get('/users', async(req, res)=>{
+      const result= await userCollection.find().toArray();
+      res.send(result);
+    })
+
     //insert users to DB on login 
     app.post('/users', async (req, res) => {
       const userInfo= req.body;
