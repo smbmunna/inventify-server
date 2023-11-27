@@ -73,6 +73,17 @@ async function run() {
       res.send(result);
     })
 
+    //update product limit in shop collection
+    app.patch('/shops/updateLimit/:email', async(req, res)=>{
+      const email= req.params.email;
+      const filter= {ownerEmail: email };
+
+      const updateDoc= {
+        $set: req.body
+      }
+      const result= await shopCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
 
                                                       //Product apis
     app.post('/products', async(req, res)=>{      
