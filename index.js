@@ -74,6 +74,12 @@ async function run() {
       res.send(result);
     })
 
+    //get all shops for admin
+    app.get('/shops', async(req, res)=>{
+      const result= await shopCollection.find().toArray();      
+      res.send(result);
+    })
+
     //update product limit in shop collection
     app.patch('/shops/updateLimit/:email', async(req, res)=>{
       const email= req.params.email;
