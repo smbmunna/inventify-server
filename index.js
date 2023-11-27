@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || '5000';
 require('dotenv').config();
+const stripe= require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 //middlewares
 app.use(cors());
@@ -31,6 +32,7 @@ async function run() {
     const shopCollection = client.db('inventifyDb').collection('shops');
     const productCollection = client.db('inventifyDb').collection('products');
     const cartCollection = client.db('inventifyDb').collection('carts');
+    const salesCollection = client.db('inventifyDb').collection('sales');
 
                                                 //Users api
     
@@ -118,12 +120,47 @@ async function run() {
     })
 
     // -----------------------------Cart related apis
+
+    //--insert cart
     app.post('/carts', async(req,res)=>{
       const product= req.body;
       const result= await cartCollection.insertOne(product);
       res.send(result);
     })
+    
+    //---------------------------find cart of a specific shop
+    app.get('/carts/:email', async(req, res)=>{
+      const email= req.params.email;      
+      const query={userEmail: email};
+      const result= await cartCollection.find(query).toArray();
+      res.send(result);            
+    })
 
+    // -----------------------------Sales Collection related apis
+    //-----insert into sales collection
+    app.post('/sales', async(req, res)=>{
+      const product= req.body;
+      const result= await salesCollection.insertOne(product);
+      res.send(result);
+    })
+
+
+    //-----------------------payment api
+    //payment intent
+    app.post('/create-payment-intent', async(req, res)=>{
+      const {price}= req.body;
+      const amount= parseInt(price * 100);
+
+      const paymentIntent= await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+        payment_method_types: ['card']
+      })
+
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      })
+    })
 
 
     // Connect the client to the server	(optional starting in v4.7)
