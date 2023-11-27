@@ -33,6 +33,7 @@ async function run() {
     const productCollection = client.db('inventifyDb').collection('products');
     const cartCollection = client.db('inventifyDb').collection('carts');
     const salesCollection = client.db('inventifyDb').collection('sales');
+    const reviewsCollection = client.db('inventifyDb').collection('reviews');
 
                                                 //Users api
     
@@ -155,6 +156,14 @@ async function run() {
       res.send(result);
     })
 
+    //--get sales collectio data
+    app.get('/sales/:email', async(req, res)=>{
+      const email= req.params.email;
+      const query= {userEmail: email};
+      const result= await salesCollection.find(query).toArray();
+      res.send(result);
+    })
+
 
     //-----------------------payment api
     //payment intent
@@ -171,6 +180,13 @@ async function run() {
       res.send({
         clientSecret: paymentIntent.client_secret
       })
+    })
+
+
+    //---------get reviews data for testimonials    
+    app.get('/reviews', async (req, res) => {
+      const result = await reviewsCollection.find().toArray();
+      res.send(result);
     })
 
 
