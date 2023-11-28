@@ -97,6 +97,20 @@ async function run() {
       res.send(result);
     })
 
+    //update owner name and email
+    // app.put('/shop/udate/owner/:shopId', async (req, res)=>{
+    //   const shopId= req.params.shopId;
+    //   filter={shopId: new ObjectId(shopId)};
+    //   const updateDoc= {
+    //     $set: {
+    //       ...req.body
+    //     }
+    //   }
+
+    //   const result= await shopCollection.updateOne(filter, updateDoc);
+    //   res.send(result);
+    // })
+
                                                       //Product apis
     app.post('/products', async(req, res)=>{      
       const productInfo= req.body;
@@ -150,6 +164,7 @@ async function run() {
       const result= await cartCollection.insertOne(product);
       res.send(result);
     })
+
     
     //---------------------------find cart of a specific shop
     app.get('/carts/:email', async(req, res)=>{
@@ -157,6 +172,13 @@ async function run() {
       const query={userEmail: email};
       const result= await cartCollection.find(query).toArray();
       res.send(result);            
+    })
+    //delete cart item
+    app.delete('/carts/:id', async(req,res)=>{
+      const id= req.params.id;
+      const query= {_id: id};
+      const result= await cartCollection.deleteOne(query);
+      res.send(result);
     })
 
     // -----------------------------Sales Collection related apis
