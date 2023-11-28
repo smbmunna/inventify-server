@@ -42,6 +42,13 @@ async function run() {
       res.send(result);
     })
 
+    //get admin user
+    app.get('/adminInfo', async(req, res)=>{
+      const query= {role:'admin'};
+      const result= await userCollection.findOne(query);
+      res.send(result);
+    })
+
     //insert users to DB on login 
     app.post('/users', async (req, res) => {
       const userInfo= req.body;
@@ -60,6 +67,18 @@ async function run() {
         }
       }
       const result= await userCollection.updateOne(filter, updatedDoc);
+      res.send(result);
+    })
+    //update admins income
+    app.put('/users/admin/income/:amount', async(req, res)=>{
+      const amount= req.params.amount;
+      const filter= {role: "admin"}
+      const updateDoc= {
+        $set:{
+          income:amount
+        }
+      }
+      const result= await userCollection.updateOne(filter, updateDoc);
       res.send(result);
     })
 
