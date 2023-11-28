@@ -116,6 +116,23 @@ async function run() {
       res.send(result);
     })
 
+    //admin stats
+    app.get('/admin-stats', async(req,res)=>{
+      const totalProduct= await productCollection.estimatedDocumentCount();
+      const result= await salesCollection.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalSales:{
+              $sum: '$sellingPrice'
+            }
+          }
+        }
+      ]).toArray();
+      const sales= result.length >0 ? result[0].totalSales : 0;
+      res.send([totalProduct,sales]);
+    })
+
     //update owner name and email
     // app.put('/shop/udate/owner/:shopId', async (req, res)=>{
     //   const shopId= req.params.shopId;
