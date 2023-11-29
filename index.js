@@ -52,6 +52,13 @@ async function run() {
     //insert users to DB on login 
     app.post('/users', async (req, res) => {
       const userInfo= req.body;
+      //check if user exists
+      const query={email:userInfo.email};
+      const userExists= await userCollection.findOne(query);
+      if(userExists){
+        res.send({message:'User already exists in the database'});
+        return;
+      }
       const result= await userCollection.insertOne(userInfo);
       res.send(result);
     })
@@ -244,6 +251,7 @@ async function run() {
       res.send(result);
     })
 
+    
 
     //-----------------------payment api
     //payment intent
