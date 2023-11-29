@@ -115,7 +115,18 @@ async function run() {
       const result= await shopCollection.updateOne(filter, updateDoc);
       res.send(result);
     })
-
+//----------------------------------admin related apis
+    //check if admin
+    app.get('/checkAdmin/:email', async(req, res)=>{
+      const email= req.params.email;
+      const query= {email:email};
+      const user= await userCollection.findOne(query);
+      let admin = false;
+      if (user) {
+        admin = user?.role === 'admin';
+      }
+      res.send({ admin });
+    })
     //admin stats
     app.get('/admin-stats', async(req,res)=>{
       const totalProduct= await productCollection.estimatedDocumentCount();
