@@ -104,6 +104,7 @@ async function run() {
       const result= await shopCollection.findOne(query);      
       res.send(result);
     })
+   
 
     //get all shops for admin
     app.get('/shops', async(req, res)=>{
@@ -207,6 +208,14 @@ async function run() {
       const id= req.params.id;
       const query= {_id: new ObjectId(id)};
       const result= await productCollection.deleteOne(query);
+      res.send(result);
+    })
+
+     //get product list with shop id
+     app.get('/shop/product/:shopId', async(req, res)=>{
+      const shopId= req.params.shopId; 
+      const query= {shopId: shopId};
+      const result= await productCollection.find(query).toArray();      
       res.send(result);
     })
 
